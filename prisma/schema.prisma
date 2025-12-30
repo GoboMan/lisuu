@@ -1,0 +1,49 @@
+generator client {
+	provider = "prisma-client-js"
+	output   = "../lib/generated/prisma"
+}
+
+datasource db {
+	provider = "mysql"
+}
+
+//-----------------------------------------------------------------------------
+//	User
+//-----------------------------------------------------------------------------
+enum Role {
+	USER
+	ADMIN
+}
+
+model User {
+	userId					Int				@id @default(autoincrement())
+	firstName				String
+	lastName				String
+	email					String			@unique
+	role					Role			@default(USER)
+
+	//	playlist一覧
+	playlists				Playlist[]
+}
+
+//-----------------------------------------------------------------------------
+//	Playlist, 応用情報技術者試験、TOEIC英単語100語などが入る
+//-----------------------------------------------------------------------------
+model Playlist {
+	playlistId				Int				@id @default(autoincrement())
+	name					String
+
+	//	User relation
+	user					User			@relation(fields: [userId], references: [userId])
+	userId					Int
+	
+}
+
+//-----------------------------------------------------------------------------
+//	Track, DNSサーバー、clear-cutなどが入る
+//-----------------------------------------------------------------------------
+model Track {
+	trackId					Int				@id @default(autoincrement())
+	name					String
+	description				String
+}
