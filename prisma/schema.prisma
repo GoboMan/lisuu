@@ -21,9 +21,8 @@ model User {
 	lastName				String
 	email					String			@unique
 	role					Role			@default(USER)
-
-	//	playlist一覧
 	playlists				Playlist[]
+	tracks					Track[]
 }
 
 //-----------------------------------------------------------------------------
@@ -32,11 +31,13 @@ model User {
 model Playlist {
 	playlistId				Int				@id @default(autoincrement())
 	name					String
+	createdAt				DateTime		@default(now())
+	updatedAt				DateTime		@updatedAt
+	playlistTracks			PlaylistTrack[]
 
 	//	User relation
 	user					User			@relation(fields: [userId], references: [userId])
 	userId					Int
-	
 }
 
 //-----------------------------------------------------------------------------
@@ -45,5 +46,35 @@ model Playlist {
 model Track {
 	trackId					Int				@id @default(autoincrement())
 	name					String
-	description				String
+	description				String			@db.Text
+	createdAt				DateTime		@default(now())
+	updatedAt				DateTime		@updatedAt
+	playlistTracks			PlaylistTrack[]
+
+	//	音声データ関連
+	audioUrl				String			// ファイルの保存先URL（S3やCloudinaryなど）
+	duration				Int				// 再生時間（秒単位）。UIで「3:45」などと出すのに必須
+	fileSize				Int				// ファイルサイズ（バイト）。管理や制限チェック用
+	mimeType				String			// "audio/mpeg" や "audio/wav"。ブラウザの再生互換性の判断に必要
+	filePath				String			// ストレージ内のファイルパス。ファイルを削除・更新する際に使用
+
+	//	Relations
+	user					User			@relation(fields: [userId], references: [userId])
+	userId					Int
+}
+
+//-----------------------------------------------------------------------------
+//	PlaylistTrack, PlaylistとTrackの中間テーブル
+//-----------------------------------------------------------------------------
+model PlaylistTrack {
+	playlistTrackId			Int				@id @default(autoincrement())
+	order					Int				@default(0)						//	プレイリスト内での順番を管理
+
+	//	Relations
+	playlist				Playlist		@relation(fields: [playlistId], references: [playlistId])
+	playlistId				Int
+	track					Track			@relation(fields: [trackId], references: [trackId])
+	trackId					Int
+
+	@@unique([playlistId, trackId])											//	同じplaylistに同じtrackが２回入るのを防ぐ
 }
