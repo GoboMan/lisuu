@@ -36,30 +36,45 @@ model Playlist {
 	playlistTracks			PlaylistTrack[]
 
 	//	User relation
-	user					User			@relation(fields: [userId], references: [userId])
+	user					User			@relation(fields: [userId], references: [userId], onDelete: Cascade)
 	userId					Int
 }
 
 //-----------------------------------------------------------------------------
 //	Track, DNSサーバー、clear-cutなどが入る
 //-----------------------------------------------------------------------------
+enum Status {
+	PENDING
+	PROCESSING
+	COMPLETE
+}
+
 model Track {
 	trackId					Int				@id @default(autoincrement())
 	name					String
 	description				String			@db.Text
 	createdAt				DateTime		@default(now())
 	updatedAt				DateTime		@updatedAt
+	status					Status			@default(PENDING)
 	playlistTracks			PlaylistTrack[]
 
 	//	音声データ関連
-	audioUrl				String			// ファイルの保存先URL（S3やCloudinaryなど）
-	duration				Int				// 再生時間（秒単位）。UIで「3:45」などと出すのに必須
-	fileSize				Int				// ファイルサイズ（バイト）。管理や制限チェック用
-	mimeType				String			// "audio/mpeg" や "audio/wav"。ブラウザの再生互換性の判断に必要
-	filePath				String			// ストレージ内のファイルパス。ファイルを削除・更新する際に使用
+	audioUrl				String?			// ファイルの保存先URL（S3やCloudinaryなど）
+	audioDuration			Int?			// 再生時間（秒単位）。UIで「3:45」などと出すのに必須
+	audioFileSize			Int?			// ファイルサイズ（バイト）。管理や制限チェック用
+	audioMimeType			String?			// "audio/mpeg" や "audio/wav"。ブラウザの再生互換性の判断に必要
+	audioFilePath			String?			// ストレージ内のファイルパス。ファイルを削除・更新する際に使用
+
+	//	スライド画像データ関連
+	slideUrl				String?
+	slidePath				String?
+
+	//	動画データ関連（音声＋スライド）
+	videoUrl				String?
+	videoPath				String?
 
 	//	Relations
-	user					User			@relation(fields: [userId], references: [userId])
+	user					User			@relation(fields: [userId], references: [userId], onDelete: Cascade)
 	userId					Int
 }
 
@@ -71,9 +86,9 @@ model PlaylistTrack {
 	order					Int				@default(0)						//	プレイリスト内での順番を管理
 
 	//	Relations
-	playlist				Playlist		@relation(fields: [playlistId], references: [playlistId])
+	playlist				Playlist		@relation(fields: [playlistId], references: [playlistId], onDelete: Cascade)
 	playlistId				Int
-	track					Track			@relation(fields: [trackId], references: [trackId])
+	track					Track			@relation(fields: [trackId], references: [trackId], onDelete: Cascade)
 	trackId					Int
 
 	@@unique([playlistId, trackId])											//	同じplaylistに同じtrackが２回入るのを防ぐ
