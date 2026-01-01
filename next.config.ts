@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // これを追加：PrismaをTurbopackの最適化対象から外す（重要！）
+  serverExternalPackages: ["@prisma/client"],
 };
 
 export default nextConfig;

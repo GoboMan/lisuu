@@ -8,14 +8,14 @@ export default function RootLayout({
 }) {
 
   return (
-    <html lang="ja">
+    <html lang="en">
       <body>
         <div className="flex flex-row min-h-screen">
           { /**** sidebar ****/ }
           <Sidebar />
 
           { /**** content ****/ }
-          <main>
+          <main className="flex-1">
             {children}
           </main>
         </div>
