@@ -1,7 +1,3 @@
-//-----------------------------------------------------------------------------
-//  playlistを作成する
-//  @feature/playlists/actions/createPlaylist.ts
-//-----------------------------------------------------------------------------
 "use server";
 
 import { Playlist } from "@prisma/client";
