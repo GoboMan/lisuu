@@ -11,7 +11,13 @@ export default async function Playlists() {
   const userId = 1;
 
   //  playlistsを取得
-  const playlists = await getPlaylists(userId);
+  let playlists: Playlist[] = [];
+  try {
+    playlists = await getPlaylists(userId);
+  }
+  catch (error) {
+    console.error(error);
+  }
 
   return (
     <div className="flex flex-row h-screen w-full">

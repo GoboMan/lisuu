@@ -1,7 +1,7 @@
 type props = {
   children : React.ReactNode;
   onClick? : () => void;
-  variant? : "primary" | "secondary";
+  variant? : "primary" | "secondary" | "custom";
   className? : string;
 };
 
@@ -10,6 +10,7 @@ export default function Button({ children, onClick, variant = "primary", classNa
   const variantStyle = {
     primary : "bg-blue-500 text-white",
     secondary : "bg-gray-200 text-gray-700",
+    custom : "",
   };
 
   return (

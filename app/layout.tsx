@@ -1,5 +1,6 @@
 import "./globals.css";
 import Sidebar from "@/components/layout/sidebar";
+import { Toaster } from "sonner";
 
 export default function RootLayout({
   children,
@@ -19,6 +20,9 @@ export default function RootLayout({
             {children}
           </main>
         </div>
+
+        { /**** toaster ****/ }
+        <Toaster richColors position="top-right" duration={2000} />
       </body>
     </html>
   );
