@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Button from "@/components/ui/Button";
@@ -22,13 +23,23 @@ type DeleteInputs = {
 };
 
 export default function PlaylistsSidebar({ playlists } : { playlists : Playlist[] }) {
+  //-----------------------------------------------------------------------------
+  //  パラメータ関連
+  //-----------------------------------------------------------------------------
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const selectedPlaylistId = searchParams.get("playlistId");
+
+  //-----------------------------------------------------------------------------
   //  state関連
+  //-----------------------------------------------------------------------------
   const [isCreatePlaylistDialogShown, setIsCreatePlaylistDialogShown] = useState(false);
   const [isUpdatePlaylistDialogShown, setIsUpdatePlaylistDialogShown] = useState(false);
   const [isDeletePlaylistDialogShown, setIsDeletePlaylistDialogShown] = useState(false);
-  const [selectedPlaylist, setSelectedPlaylist] = useState<Playlist | null>(null);
 
+  //-----------------------------------------------------------------------------
   //  create form関連
+  //-----------------------------------------------------------------------------
   const {
     register : registerCreate,
     handleSubmit : handleSubmitCreate,
@@ -55,7 +66,9 @@ export default function PlaylistsSidebar({ playlists } : { playlists : Playlist[
     }
   };
 
+  //-----------------------------------------------------------------------------
   //  update form関連
+  //-----------------------------------------------------------------------------
   const {
     register : registerUpdate,
     handleSubmit : handleSubmitUpdate,
@@ -63,7 +76,7 @@ export default function PlaylistsSidebar({ playlists } : { playlists : Playlist[
     formState: { errors : errorsUpdate },
   } = useForm<UpdateInputs>();
 
-  const onEdit = (playlist : Playlist) => {
+  const openUpdateDialog = (playlist : Playlist) => {
     //  入力内容をセットして、ダイアログを表示
     resetUpdate({ playlistId : playlist.playlistId, name : playlist.name });
     setIsUpdatePlaylistDialogShown(true);
@@ -85,7 +98,9 @@ export default function PlaylistsSidebar({ playlists } : { playlists : Playlist[
     }
   };
 
+  //-----------------------------------------------------------------------------
   //  delete関連
+  //-----------------------------------------------------------------------------
   const {
     register : registerDelete,
     handleSubmit : handleSubmitDelete,
@@ -93,7 +108,7 @@ export default function PlaylistsSidebar({ playlists } : { playlists : Playlist[
     formState: { errors : errorsDelete },
   } = useForm<DeleteInputs>();
 
-  const onDelete = (playlistId : number) => {
+  const openDeleteDialog = (playlistId : number) => {
     resetDelete({ playlistId : playlistId });
     setIsDeletePlaylistDialogShown(true);
   }
@@ -113,6 +128,15 @@ export default function PlaylistsSidebar({ playlists } : { playlists : Playlist[
     }
   }
 
+  //-----------------------------------------------------------------------------
+  //  Playlist選択
+  //-----------------------------------------------------------------------------
+  const handleSelect = (playlistId : number) => {
+    //  URL更新
+    //  MEMO : scrollをfalseにすることで、ページ遷移時にスクロールしないようにする
+    router.push(`/playlists?playlistId=${playlistId}`, { scroll : false });
+  }
+
   return (
     <div className="h-full scroll-auto w-72 bg-gray-200 p-4">
       <div className="flex items-center w-full mb-4">
@@ -125,7 +149,7 @@ export default function PlaylistsSidebar({ playlists } : { playlists : Playlist[
       <div className="flex flex-col gap-4">
         {playlists.length > 0 ? (
           playlists.map((playlist : Playlist) => {
-            const isSelected = selectedPlaylist?.playlistId === playlist.playlistId;
+            const isSelected = selectedPlaylistId == playlist.playlistId;
 
             return (
               <div
@@ -137,7 +161,7 @@ export default function PlaylistsSidebar({ playlists } : { playlists : Playlist[
                     : "bg-white hover:bg-gray-100"
                   }
                 `}
-                onClick={() => setSelectedPlaylist(playlist)}
+                onClick={() => handleSelect(playlist.playlistId)}
               >
                 <h2 className="text-sm">{playlist.name}</h2>
                 <div className="flex-1"></div>
@@ -145,7 +169,7 @@ export default function PlaylistsSidebar({ playlists } : { playlists : Playlist[
                   variant="custom"
                   onClick={(e) => {
                     e.stopPropagation();
-                    onEdit(playlist)
+                    openUpdateDialog(playlist)
                   }}
                   className="invisible group-hover:visible"
                   aria-label="Edit Playlist"
@@ -157,7 +181,7 @@ export default function PlaylistsSidebar({ playlists } : { playlists : Playlist[
                   variant="custom"
                   onClick={(e) => {
                     e.stopPropagation();
-                    onDelete(playlist.playlistId)
+                    openDeleteDialog(playlist.playlistId)
                   }}
                   className="invisible group-hover:visible bg-red-200"
                   aria-label="Delete Playlist"

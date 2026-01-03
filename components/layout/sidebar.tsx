@@ -19,7 +19,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className={`${isExpanded ? "w-64" : "w-16"} transition-all duration-300 p-4 bg-gray-100`}>
+    <aside className={`${isExpanded ? "w-64" : "w-16"} transition-all duration-300 p-4 bg-gray-100 shadow-lg z-10`}>
       <button onClick={ () => setIsExpanded( prev => !prev ) }>
         <img className="w-12 h-12 rounded-full" src="/lisuu_logo.png" />
       </button>
