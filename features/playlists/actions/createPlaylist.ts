@@ -11,7 +11,7 @@ type CreatePlaylistResult =
 export async function createPlaylist(name : string): Promise<CreatePlaylistResult> {
   //  バリデーション
   if (!name || name.trim().length === 0) {
-    return { success : false, error : "名前を入力してください" };
+    return { success : false, error : "Enter playlist name" };
   }
 
   //  セキュリティ：サーバー側で認証情報を取得（例：next-authなど）
@@ -40,7 +40,7 @@ export async function createPlaylist(name : string): Promise<CreatePlaylistResul
     console.error("Database Error:", error);
     return {
       success : false,
-      error : "プレイリストの保存に失敗しました",
+      error : "Failed to create playlist",
     };
   }
 }

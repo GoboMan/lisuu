@@ -9,7 +9,7 @@ import { Track } from "@prisma/client";
 import Button from "@/components/ui/Button";
 import Dialog from "@/components/ui/Dialog";
 import Input from "@/components/ui/Input";
-import TrackDetail from "@/features/tracks/components/trackDetail";
+import TrackSidePanel from "@/features/tracks/components/trackSidePanel";
 
 import { createTrack } from "@/features/tracks/actions/createTrack";
 
@@ -115,7 +115,7 @@ export default function Tracks({ tracks, playlistId }: TracksProps) {
       </div>
 
       {/**** 詳細表示エリア ****/}
-      {selectedTrack && <TrackDetail track={selectedTrack} />}
+      {selectedTrack && <TrackSidePanel track={selectedTrack} />}
 
       {/**** 作成ダイアログ ****/}
       <Dialog

@@ -1,6 +1,7 @@
 "use client";
 
 import { Track } from "@prisma/client";
+import TrackDetail from "@/features/tracks/components/trackDetail";
 
 type GeneralTabProps = {
 	track : Track;
@@ -8,10 +9,7 @@ type GeneralTabProps = {
 
 export default function GeneralTab({ track } : GeneralTabProps) {
 
-
   return (
-    <div>
-      <h1>General</h1>
-    </div>
+    <TrackDetail track={track} />
   );
 }
